@@ -3,8 +3,11 @@ import {Text, View} from 'react-native';
 
 class Greeting extends Component{
     render(){
+        let greeting = `
+            Hello ${this.props.name}! How are you?
+        `
         return(
-            <Text>Hello {this.props.name}. How are you?</Text>
+            <Text>{greeting}</Text>
         );
     }
 }
@@ -15,6 +18,7 @@ export default class MultipleGreetings extends Component{
             <View 
                 style={{alignItems: 'center'}}
             >
+                <Greeting name='Biba'/>
                 <Greeting name='Boba'/>
             </View>
         );
