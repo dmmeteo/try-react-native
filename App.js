@@ -1,14 +1,13 @@
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
-import Robot from './components/Robot';
-import TextBlink from './components/TextBlink';
+import FixedDemension from './components/FixedDemension';
+import FlexDemension from './components/FlexDemension';
 
 export default class App extends React.Component {
   render() {
     return (
-      <View style={styles.container}>
-        <Robot/>
-        <TextBlink/>
+      <View style={{flex: 1}}>
+        <FlexDemension/>
       </View>
     );
   }
@@ -21,4 +20,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
+  firstText: {
+    margin: 5,
+    color: 'green'
+  }
 });
