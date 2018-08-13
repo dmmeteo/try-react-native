@@ -1,13 +1,12 @@
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
-import FixedDemension from './components/FixedDemension';
-import FlexDemension from './components/FlexDemension';
+import FlexExample from './components/FlexExample';
 
 export default class App extends React.Component {
   render() {
     return (
-      <View style={{flex: 1}}>
-        <FlexDemension/>
+      <View style={{flex: 1, flexDirection: 'column'}}>
+        <FlexExample/>
       </View>
     );
   }
