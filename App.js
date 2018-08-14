@@ -1,118 +1,29 @@
 import React from 'react';
-import { StyleSheet, TextInput, Text, View, Keyboard } from 'react-native';
+import { Alert, AppRegistry, StyleSheet, View } from 'react-native';
+import Button from 'react-native-button';
 
 export default class App extends React.Component {
-    constructor(props){
-        super(props);
-        this.state = {
-            typedText: 'please type your text',
-            typedPassword: '',
-            typedDescription: ''
-        };
+    _onPressButton(){
+        Alert.alert('You pressed the button!');
     }
 
-    componentWillMount(){
-        this.keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', ()=>{
-            this.setState(()=>{
-                return {typedText: 'Keyboard is shown'}
-            })
-        });
-        this.keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', () => {
-            this.setState(() => {
-                return { typedText: 'Keyboard Hide' }
-            })
-        });
-    }
-
-    componentWillUnmount(){
-        this.keyboardDidShowListener.remove()
-        this.keyboardHideShowListener.remove()
-    }
-
-    render() {
+    render(){
         return (
-            <View>
-                <TextInput 
-                    style={styles.firstInput}
-                    keyboardType='email-address'
-                    placeholder='Enter your email'
-                    placeholderTextColor='red'
-                    underlineColorAndroid='transparent'
-                    onChangeText={
-                        (text) => {
-                            this.setState(
-                                (previouseState) => {
-                                    return {
-                                        typedText: text
-                                    }
-                                }
-                            )
-                        }
-                    }
-                />
-                <Text style={styles.firstText}>{this.state.typedText}</Text>
-                <TextInput
-                    style={styles.firstInput}
-                    keyboardType='default'
-                    secureTextEntry={true}
-                    placeholder='Enter your password'
-                    underlineColorAndroid='transparent'
-                    onChangeText={(text)=>{
-                        this.setState(()=>{
-                            return {
-                                typedPassword: text
-                            }
-                        })
+            <View style={{
+                flex: 1,
+                justifyContent: 'center',
+                alignItems: 'center'
+            }}>
+                <Button
+                    style={{
+                        backgroundColor: 'green',
+                        padding: 15,
+                        borderRadius: 50,
+                        color: 'white'
                     }}
-                />
-                <TextInput 
-                    style={styles.textarea}
-                    underlineColorAndroid='transparent'
-                    multiple={true}
-                    returnKeyType='done'
-                    editable={true}
-                    autoFocus={true}
-                    onChangeText={(text)=>{
-                        this.setState(()=>{
-                            return {
-                                typedDescription: text
-                            }
-                        })
-                    }}
-                />
+                    onPress={this._onPressButton}
+                >This is a button</Button>
             </View>
         );
     }
 }
-
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: '#fff',
-        alignItems: 'center',
-        justifyContent: 'center',
-    },
-    firstInput: {
-        height: 40,
-        margin: 20,
-        padding: 10,
-        borderColor: 'gray',
-        borderWidth: 1,
-    },
-    firstText: {
-        marginLeft: 20
-    },
-    textarea: {
-        height: 100,
-        margin: 20,
-        borderBottomColor: 'green',
-        borderLeftColor: 'green',
-        borderRightColor: 'green',
-        borderBottomWidth: 3,
-        borderLeftWidth: 3,
-        borderRightWidth: 3,
-        borderTopColor: 'gray',
-        borderTopWidth: 1,
-        padding: 10
-    }
-});
