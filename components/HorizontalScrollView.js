@@ -18,11 +18,11 @@ class HorizontalScrollView extends Component {
                 // onMomentumScrollEnd={() => {
                 //     alert('End scrolling')
                 // }}
-                onScroll={(event)=>{
-                    let logData = `Scroll to x = ${event.nativeEvent.contentOffset.x}, y = ${event.nativeEvent.contentOffset.y}`;
-                    alert(logData);
-                }}
-                scrollEventThrottle={1000}
+                // onScroll={(event)=>{
+                //     let logData = `Scroll to x = ${event.nativeEvent.contentOffset.x}, y = ${event.nativeEvent.contentOffset.y}`;
+                //     alert(logData);
+                // }}
+                // scrollEventThrottle={1000}
             >
                 <View
                     style={{
