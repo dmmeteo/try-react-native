@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
-import {View} from 'react-native';
+import { View, Dimensions } from 'react-native';
 import VerticlaScrollView from './components/VerticlaScrollView';
+import HorizontalScrollView from './components/HorizontalScrollView';
 
 export default class App extends Component {
     render() {
@@ -12,7 +13,8 @@ export default class App extends Component {
                     alignItems: 'center'
                 }}
             >
-                <VerticlaScrollView/>
+                {/* <VerticlaScrollView/> */}
+                <HorizontalScrollView/>
             </View>
         );
     }
