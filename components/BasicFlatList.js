@@ -1,16 +1,28 @@
 import React, { Component } from 'react';
-import {View, FlatList, Text, StyleSheet} from 'react-native';
+import {View, FlatList, Text, Image, StyleSheet} from 'react-native';
 import flatListData from '../data/flatListData';
 
 class FlatListItem extends Component{
     render(){
         return(
             <View style={{
-                flex: 1,
-                backgroundColor: this.props.index % 2 == 0 ? 'mediumseagreen' : 'tomato'
+                flex:1,
+                flexDirection: 'row',
+                borderBottomColor: 'white',
+                borderBottomWidth: 1,
+                backgroundColor: 'mediumseagreen'
             }}>
-                <Text style={styles.flatListItem}>{this.props.item.name}</Text>
-                <Text style={styles.flatListItem}>{this.props.item.foodDescription}</Text>
+                <Image source={{uri: this.props.item.imageUrl}}
+                    style={{width: 100, height: 100, margin: 5,}}
+                />
+                <View style={{
+                    flex: 1,
+                    flexDirection: 'column',
+                    justifyContent: 'center'
+                }}>
+                    <Text style={styles.flatListItem}>{this.props.item.name}</Text>
+                    <Text style={styles.flatListItem}>{this.props.item.foodDescription}</Text>
+                </View>
             </View>
         )
     }
