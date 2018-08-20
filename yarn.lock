@@ -5501,6 +5501,10 @@ raf@^3.1.0:
   dependencies:
     performance-now "^2.1.0"
 
+random-string@^0.2.0:
+  version "0.2.0"
+  resolved "https://registry.yarnpkg.com/random-string/-/random-string-0.2.0.tgz#a46e4375352beda9a0d7b0d19ed6d321ecd1d82d"
+
 randomatic@^3.0.0:
   version "3.1.0"
   resolved "https://registry.yarnpkg.com/randomatic/-/randomatic-3.1.0.tgz#36f2ca708e9e567f5ed2ec01949026d50aa10116"
@@ -5618,6 +5622,13 @@ react-native-maps@0.21.0:
   dependencies:
     babel-plugin-module-resolver "^2.3.0"
     babel-preset-react-native "1.9.0"
+
+react-native-modalbox@^1.6.0:
+  version "1.6.0"
+  resolved "https://registry.yarnpkg.com/react-native-modalbox/-/react-native-modalbox-1.6.0.tgz#ee353a2d568715a2b10db8eeb91132fb1f45952b"
+  dependencies:
+    create-react-class "^15.6.0"
+    prop-types "^15.5.10"
 
 react-native-safe-module@^1.1.0:
   version "1.2.0"

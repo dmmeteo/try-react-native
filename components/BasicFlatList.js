@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
-import {Alert, View, FlatList, Text, Image, StyleSheet} from 'react-native';
-import flatListData from '../data/flatListData';
+import {TouchableHighlight, Alert, Platform, View, FlatList, Text, Image, StyleSheet} from 'react-native';
 import Swipeout from 'react-native-swipeout';
+import flatListData from '../data/flatListData';
+import AddModal from './AddModal';
 
 class FlatListItem extends Component{
     constructor(props){
@@ -12,6 +13,10 @@ class FlatListItem extends Component{
     }
     render(){
         const swipeSettings = {
+            style: {
+                borderColor: 'white',
+                borderTopWidth: 1
+            },
             autoClose: true,
             onClose: (secId, rowId, direction) => {
                 if (this.state.actiweRowKey != null) {
@@ -21,6 +26,7 @@ class FlatListItem extends Component{
             onOpen: (secId, rowId, direction) => {
                 this.setState({actiweRowKey: this.props.item.key});
             },
+            sensitivity: 1,
             right: [
                 {
                     onPress: () => {
@@ -51,8 +57,6 @@ class FlatListItem extends Component{
                 <View style={{
                     flex:1,
                     flexDirection: 'row',
-                    borderBottomColor: 'white',
-                    borderBottomWidth: 1,
                     backgroundColor: 'mediumseagreen'
                 }}>
                     <Image source={{uri: this.props.item.imageUrl}}
@@ -78,26 +82,67 @@ export default class BasicFlatList extends Component {
         this.state = ({
             deleteRowKey: null
         });
+        this._onPressAdd = this._onPressAdd.bind(this);
     }
 
-    refreshFlatList(deleteKey){
+    refreshFlatList(activeKey){
         this.setState((prevState) => {
             return {
-                deleteRowKey: deleteKey
+                deleteRowKey: activeKey
             }
         });
+        this.refs.flatList.scrollToEnd();
+    }
+
+    _onPressAdd(){
+        // Alert.alert('You add item');
+        this.refs.addModal.showAddModal();
     }
 
     render() {
         return (
             <View style={styles.container}>
+                <View style={{
+                    backgroundColor: 'tomato',
+                    height: 64,
+                    flexDirection: 'row',
+                    justifyContent: 'flex-end',
+                    alignItems: 'center'
+                }}>
+                    <Text style={{color: 'white', marginRight: 45, fontSize: 30}}>Tomato color </Text>
+                    <TouchableHighlight 
+                        style={{marginRight: 10,
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            width: 35,
+                            height: 35,
+                            borderWidth: 1,
+                            borderColor: 'white',
+                            borderRadius: 50,
+                        }}
+                        underlayColor='tomato'
+                        onPress={this._onPressAdd}
+                    >
+                        <Text style={{
+                            textAlign: 'center',
+                            textAlignVertical: 'center',
+                            color: 'white',
+                            fontSize: 30,
+                        }}>+</Text>
+                    </TouchableHighlight>
+                </View>
                 <FlatList
+                    ref={'flatList'}
                     data={flatListData}
                     renderItem={({item, index}) => {
                         return (
                             <FlatListItem item={item} index={index} parentFlatList={this}/>
                         )
                     }}
+                />
+                <AddModal 
+                    ref={'addModal'}
+                    parentFlatList={this}
                 />
             </View>
         );
@@ -106,7 +151,8 @@ export default class BasicFlatList extends Component {
 
 const styles = StyleSheet.create({
     container: {
-        marginTop: 20,
+        backgroundColor: 'tomato',
+        paddingTop: Platform.OS === 'ios' ? 34 : 20,
         flex: 1
     },
     flatListItem: {
