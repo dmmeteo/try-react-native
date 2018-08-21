@@ -5,19 +5,25 @@ import Button from 'react-native-button';
 import flatListData from '../data/flatListData';
 
 const screen = Dimensions.get('window');
-class AddModal extends Component {
-    constructor(props){
+class EditModal extends Component {
+    constructor(props) {
         super(props);
         this.state = {
-            newFoodName: '',
-            newFoodDescription: ''
+            foodName: '',
+            foodDescription: ''
         }
     }
-    showAddModal(){
+    showEditModal(editingFood, flatListItem) {
+        this.setState({
+            key: editingFood.key,
+            foodName: editingFood.name,
+            foodDescription: editingFood.foodDescription,
+            flatListItem: flatListItem
+        })
         this.refs.myModal.open();
     }
-    gentrateKey(numberOfCharacters){
-        return require('random-string')({length: numberOfCharacters});
+    gentrateKey(numberOfCharacters) {
+        return require('random-string')({ length: numberOfCharacters });
     }
     render() {
         return (
@@ -42,19 +48,19 @@ class AddModal extends Component {
                     textAlign: 'center',
                     marginTop: 40
                 }}>New food's information</Text>
-                <TextInput 
+                <TextInput
                     style={styles.textInput}
-                    placeholder="Enter new food's name"
+                    placeholder="Enter food's name"
                     underlineColorAndroid='transparent'
-                    value={this.state.newFoodName}
-                    onChangeText={(text) => this.setState({newFoodName: text})}
+                    value={this.state.foodName}
+                    onChangeText={(text) => this.setState({ foodName: text })}
                 />
-                <TextInput 
+                <TextInput
                     style={styles.textInput}
-                    placeholder="Enter new food's description"
+                    placeholder="Enter food's description"
                     underlineColorAndroid='transparent'
-                    value={this.state.newFoodDescription}
-                    onChangeText={(text) => this.setState({newFoodDescription: text})}
+                    value={this.state.foodDescription}
+                    onChangeText={(text) => this.setState({ foodDescription: text })}
                 />
                 <Button
                     style={{
@@ -67,23 +73,15 @@ class AddModal extends Component {
                         color: 'white'
                     }}
                     onPress={() => {
-                        if (this.state.newFoodName.length == 0 || this.state.newFoodDescription.length == 0){
+                        if (this.state.foodName.length == 0 || this.state.foodDescription.length == 0) {
                             alert("You must enter food's name and description");
                             return;
                         }
-                        const newKey = this.gentrateKey(24)
-                        const newFood = {
-                            key: newKey,
-                            name: this.state.newFoodName,
-                            imageUrl: 'https://image.freepik.com/free-icon/restaurant-cutlery-circular-symbol-of-a-spoon-and-a-fork-in-a-circle_318-61086.jpg',
-                            foodDescription: this.state.newFoodDescription
-                        };
-                        flatListData.push(newFood);
-                        this.props.parentFlatList.refreshFlatList(newKey);
-                        this.setState({
-                            newFoodName: '',
-                            newFoodDescription: ''
-                        });
+                        let foundIndex = flatListData.findIndex(item => this.state.key == item.key);
+                        if (foundIndex < 0){return;}
+                        flatListData[foundIndex].name = this.state.foodName;
+                        flatListData[foundIndex].foodDescription = this.state.foodDescription;
+                        this.state.flatListItem.refreshFlatListItem();
                         this.refs.myModal.close()
                     }}
                 >
@@ -106,4 +104,4 @@ const styles = StyleSheet.create({
     }
 })
 
-export default AddModal;
+export default EditModal;

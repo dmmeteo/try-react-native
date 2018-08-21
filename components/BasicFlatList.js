@@ -3,13 +3,23 @@ import {TouchableHighlight, Alert, Platform, View, FlatList, Text, Image, StyleS
 import Swipeout from 'react-native-swipeout';
 import flatListData from '../data/flatListData';
 import AddModal from './AddModal';
+import EditModal from './EditModal';
+import Icon from 'react-native-vector-icons/Feather';
 
 class FlatListItem extends Component{
     constructor(props){
         super(props);
         this.state = {
-            actiweRowKey: null
+            actiweRowKey: null,
+            numberOfRefresh: 0
         }
+    }
+    refreshFlatListItem(){
+        this.setState((prevState) => {
+            return {
+                numberOfRefresh: prevState.numberOfRefresh + 1
+            }
+        });
     }
     render(){
         const swipeSettings = {
@@ -30,6 +40,13 @@ class FlatListItem extends Component{
             right: [
                 {
                     onPress: () => {
+                        this.props.parentFlatList.refs.editModal.showEditModal(flatListData[this.props.index], this);
+                    },
+                    text: (<Icon name="edit" size={30} color="white" />),
+                    type: 'primary'
+                },
+                {
+                    onPress: () => {
                         const deleteRow = this.state.actiweRowKey;
                         Alert.alert(
                             'Alert',
@@ -45,7 +62,7 @@ class FlatListItem extends Component{
                             ]
                         )
                     },
-                    text: 'Delete',
+                    text: (<Icon name="delete" size={30} color="white" />),
                     type: 'delete'
                 }
             ],
@@ -91,11 +108,9 @@ export default class BasicFlatList extends Component {
                 deleteRowKey: activeKey
             }
         });
-        this.refs.flatList.scrollToEnd();
     }
 
     _onPressAdd(){
-        // Alert.alert('You add item');
         this.refs.addModal.showAddModal();
     }
 
@@ -115,20 +130,12 @@ export default class BasicFlatList extends Component {
                             alignItems: 'center',
                             justifyContent: 'center',
                             width: 35,
-                            height: 35,
-                            borderWidth: 1,
-                            borderColor: 'white',
-                            borderRadius: 50,
+                            height: 35
                         }}
                         underlayColor='tomato'
                         onPress={this._onPressAdd}
                     >
-                        <Text style={{
-                            textAlign: 'center',
-                            textAlignVertical: 'center',
-                            color: 'white',
-                            fontSize: 30,
-                        }}>+</Text>
+                        <Icon name="plus-circle" size={30} color="white" />
                     </TouchableHighlight>
                 </View>
                 <FlatList
@@ -142,6 +149,10 @@ export default class BasicFlatList extends Component {
                 />
                 <AddModal 
                     ref={'addModal'}
+                    parentFlatList={this}
+                />
+                <EditModal
+                    ref={'editModal'}
                     parentFlatList={this}
                 />
             </View>
