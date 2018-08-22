@@ -1,29 +1,29 @@
 import React, { Component } from 'react';
-import {TouchableHighlight, Alert, Platform, View, FlatList, Text, Image, StyleSheet} from 'react-native';
+import { TouchableHighlight, Alert, Platform, View, FlatList, Text, Image, StyleSheet } from 'react-native';
 import Swipeout from 'react-native-swipeout';
 import flatListData from '../data/flatListData';
 import AddModal from './AddModal';
 import EditModal from './EditModal';
 import Icon from 'react-native-vector-icons/Feather';
 
-import {getFoodsFromServer} from '../networking/Server';
+import { getFoodsFromServer } from '../networking/Server';
 
-class FlatListItem extends Component{
-    constructor(props){
+class FlatListItem extends Component {
+    constructor(props) {
         super(props);
         this.state = {
             actiweRowKey: null,
             numberOfRefresh: 0
         }
     }
-    refreshFlatListItem(){
+    refreshFlatListItem() {
         this.setState((prevState) => {
             return {
                 numberOfRefresh: prevState.numberOfRefresh + 1
             }
         });
     }
-    render(){
+    render() {
         const swipeSettings = {
             style: {
                 borderColor: 'white',
@@ -32,11 +32,11 @@ class FlatListItem extends Component{
             autoClose: true,
             onClose: (secId, rowId, direction) => {
                 if (this.state.actiweRowKey != null) {
-                    this.setState({actiweRowKey: null});
+                    this.setState({ actiweRowKey: null });
                 }
             },
             onOpen: (secId, rowId, direction) => {
-                this.setState({actiweRowKey: this.props.item.key});
+                this.setState({ actiweRowKey: this.props.item.key });
             },
             sensitivity: 1,
             right: [
@@ -54,13 +54,15 @@ class FlatListItem extends Component{
                             'Alert',
                             'You art sure you want to delete?',
                             [
-                                {text: 'No', onPress: () => {console.log('Cancel Pressed')}, style: 'cancel'},
-                                {text: 'Yes', onPress: () => {
-                                    flatListData.splice(this.props.index, 1);
-                                    // Refresh FlatList !
-                                    this.props.parentFlatList.refreshFlatList(deleteRow);
-                                }},
-                                {cancaleble: true}
+                                { text: 'No', onPress: () => { console.log('Cancel Pressed') }, style: 'cancel' },
+                                {
+                                    text: 'Yes', onPress: () => {
+                                        flatListData.splice(this.props.index, 1);
+                                        // Refresh FlatList !
+                                        this.props.parentFlatList.refreshFlatList(deleteRow);
+                                    }
+                                },
+                                { cancaleble: true }
                             ]
                         )
                     },
@@ -71,23 +73,21 @@ class FlatListItem extends Component{
             rowId: this.props.index,
             sectionId: 1
         }
-        return(
+        return (
             <Swipeout {...swipeSettings}>
                 <View style={{
-                    flex:1,
+                    flex: 1,
                     flexDirection: 'row',
                     backgroundColor: 'mediumseagreen'
                 }}>
-                    <Image source={{uri: this.props.item.imageUrl}}
-                        style={{width: 100, height: 100, margin: 5,}}
-                    />
+                    <Icon name='user' size={100} color='white'/>
                     <View style={{
                         flex: 1,
                         flexDirection: 'column',
                         justifyContent: 'center'
                     }}>
                         <Text style={styles.flatListItem}>{this.props.item.name}</Text>
-                        <Text style={styles.flatListItem}>{this.props.item.foodDescription}</Text>
+                        <Text style={styles.flatListItem}>{this.props.item.email}</Text>
                     </View>
                 </View>
             </Swipeout>
@@ -96,7 +96,7 @@ class FlatListItem extends Component{
 }
 
 export default class BasicFlatList extends Component {
-    constructor(props){
+    constructor(props) {
         super(props);
         this.state = ({
             deleteRowKey: null,
@@ -104,19 +104,19 @@ export default class BasicFlatList extends Component {
         });
         this._onPressAdd = this._onPressAdd.bind(this);
     }
-    componentDidMount(){
+    componentDidMount() {
         this.refreshDataFromServer();
     }
-    refreshDataFromServer(){
+    refreshDataFromServer() {
         getFoodsFromServer()
             .then((foods) => {
-                this.setState({foodsFromServer: foods});
+                this.setState({ foodsFromServer: foods });
             }).catch((error) => {
-                this.setState({foodsFromServer: []})
+                this.setState({ foodsFromServer: [] });
             });
     }
 
-    refreshFlatList(activeKey){
+    refreshFlatList(activeKey) {
         this.setState((prevState) => {
             return {
                 deleteRowKey: activeKey
@@ -124,7 +124,7 @@ export default class BasicFlatList extends Component {
         });
     }
 
-    _onPressAdd(){
+    _onPressAdd() {
         this.refs.addModal.showAddModal();
     }
 
@@ -132,21 +132,21 @@ export default class BasicFlatList extends Component {
         return (
             <View style={styles.container}>
                 <View style={{
-                    backgroundColor: 'tomato',
+                    backgroundColor: 'black',
                     height: 64,
                     flexDirection: 'row',
                     justifyContent: 'flex-end',
                     alignItems: 'center'
                 }}>
-                    <Text style={{color: 'white', marginRight: 45, fontSize: 30}}>Tomato color </Text>
-                    <TouchableHighlight 
-                        style={{marginRight: 10,
+                    <TouchableHighlight
+                        style={{
+                            marginRight: 10,
                             alignItems: 'center',
                             justifyContent: 'center',
                             width: 35,
                             height: 35
                         }}
-                        underlayColor='tomato'
+                        underlayColor='black'
                         onPress={this._onPressAdd}
                     >
                         <Icon name="plus-circle" size={30} color="white" />
@@ -154,14 +154,15 @@ export default class BasicFlatList extends Component {
                 </View>
                 <FlatList
                     ref={'flatList'}
-                    data={flatListData}
-                    renderItem={({item, index}) => {
+                    data={this.state.foodsFromServer}
+                    renderItem={({ item, index }) => {
                         return (
-                            <FlatListItem item={item} index={index} parentFlatList={this}/>
+                            <FlatListItem item={item} index={index} parentFlatList={this} />
                         )
                     }}
+                    keyExtractor={item => item.phone}
                 />
-                <AddModal 
+                <AddModal
                     ref={'addModal'}
                     parentFlatList={this}
                 />
@@ -176,7 +177,7 @@ export default class BasicFlatList extends Component {
 
 const styles = StyleSheet.create({
     container: {
-        backgroundColor: 'tomato',
+        backgroundColor: 'black',
         paddingTop: Platform.OS === 'ios' ? 34 : 20,
         flex: 1
     },
