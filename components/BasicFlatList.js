@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import {TouchableHighlight, Alert, Platform, View, FlatList, Text, Image, StyleSheet} from 'react-native';
+import {TouchableHighlight, Alert, Platform, View, FlatList, Text, Image, StyleSheet, RefreshControl} from 'react-native';
 import Swipeout from 'react-native-swipeout';
 import flatListData from '../data/flatListData';
 import AddModal from './AddModal';
@@ -13,15 +13,11 @@ class FlatListItem extends Component{
         super(props);
         this.state = {
             actiweRowKey: null,
-            numberOfRefresh: 0
+            item: {}
+        };
         }
-    }
-    refreshFlatListItem(){
-        this.setState((prevState) => {
-            return {
-                numberOfRefresh: prevState.numberOfRefresh + 1
-            }
-        });
+    refreshFlatListItem(changeItem){
+        this.setState({item: changeItem});
     }
     render(){
         const swipeSettings = {
@@ -42,7 +38,9 @@ class FlatListItem extends Component{
             right: [
                 {
                     onPress: () => {
-                        this.props.parentFlatList.refs.editModal.showEditModal(flatListData[this.props.index], this);
+                        //this.props.parentFlatList.refs.editModal.showEditModal(flatListData[this.props.index], this);
+                        let selectedItem = this.state.item.name ? this.state.item : this.props.item;
+                        this.props.parentFlatList.refs.editModal.showEditModal(selectedItem, this);
                     },
                     text: (<Icon name="edit" size={30} color="white" />),
                     type: 'primary'
@@ -56,7 +54,7 @@ class FlatListItem extends Component{
                             [
                                 {text: 'No', onPress: () => {console.log('Cancel Pressed')}, style: 'cancel'},
                                 {text: 'Yes', onPress: () => {
-                                    flatListData.splice(this.props.index, 1);
+                                    // flatListData.splice(this.props.index, 1);
                                     // Refresh FlatList !
                                     this.props.parentFlatList.refreshFlatList(deleteRow);
                                 }},
@@ -86,8 +84,12 @@ class FlatListItem extends Component{
                         flexDirection: 'column',
                         justifyContent: 'center'
                     }}>
-                        <Text style={styles.flatListItem}>{this.props.item.name}</Text>
-                        <Text style={styles.flatListItem}>{this.props.item.foodDescription}</Text>
+                        <Text style={styles.flatListItem}>
+                            {this.state.item.name ? this.state.item.name : this.props.item.name}
+                        </Text>
+                        <Text style={styles.flatListItem}>
+                            {this.state.item.foodDescription ? this.state.item.foodDescription : this.props.item.foodDescription}
+                        </Text>
                     </View>
                 </View>
             </Swipeout>
@@ -100,6 +102,7 @@ export default class BasicFlatList extends Component {
         super(props);
         this.state = ({
             deleteRowKey: null,
+            refreshing: false,
             foodsFromServer: []
         });
         this._onPressAdd = this._onPressAdd.bind(this);
@@ -107,15 +110,20 @@ export default class BasicFlatList extends Component {
     componentDidMount(){
         this.refreshDataFromServer();
     }
+    onRefresh(){
+        this.refreshDataFromServer();
+    }
     refreshDataFromServer(){
+        this.setState({refreshing: true});
         getFoodsFromServer()
             .then((foods) => {
                 this.setState({foodsFromServer: foods});
+                this.setState({refreshing: false});
             }).catch((error) => {
                 this.setState({foodsFromServer: []})
+                this.setState({refreshing: false});
             });
     }
-
     refreshFlatList(activeKey){
         this.setState((prevState) => {
             return {
@@ -154,12 +162,19 @@ export default class BasicFlatList extends Component {
                 </View>
                 <FlatList
                     ref={'flatList'}
-                    data={flatListData}
+                    data={this.state.foodsFromServer}
                     renderItem={({item, index}) => {
                         return (
                             <FlatListItem item={item} index={index} parentFlatList={this}/>
                         )
                     }}
+                    keyExtractor={(item, index) => item.key}
+                    refreshControl={
+                        <RefreshControl 
+                            refreshing={this.state.refreshing}
+                            onRefresh={this.onRefresh.bind(this)}
+                        />
+                    }
                 />
                 <AddModal 
                     ref={'addModal'}

@@ -4,6 +4,8 @@ import Modal from 'react-native-modalbox';
 import Button from 'react-native-button';
 import flatListData from '../data/flatListData';
 
+import {updateAFood} from '../networking/Server';
+
 const screen = Dimensions.get('window');
 class EditModal extends Component {
     constructor(props) {
@@ -18,6 +20,7 @@ class EditModal extends Component {
             key: editingFood.key,
             foodName: editingFood.name,
             foodDescription: editingFood.foodDescription,
+            imageUrl: editingFood.imageUrl,
             flatListItem: flatListItem
         })
         this.refs.myModal.open();
@@ -77,11 +80,24 @@ class EditModal extends Component {
                             alert("You must enter food's name and description");
                             return;
                         }
-                        let foundIndex = flatListData.findIndex(item => this.state.key == item.key);
-                        if (foundIndex < 0){return;}
-                        flatListData[foundIndex].name = this.state.foodName;
-                        flatListData[foundIndex].foodDescription = this.state.foodDescription;
-                        this.state.flatListItem.refreshFlatListItem();
+                        // let foundIndex = flatListData.findIndex(item => this.state.key == item.key);
+                        // if (foundIndex < 0){return;}
+                        // flatListData[foundIndex].name = this.state.foodName;
+                        // flatListData[foundIndex].foodDescription = this.state.foodDescription;
+                        // this.state.flatListItem.refreshFlatListItem();
+                        let params = {
+                            key: this.state.key,
+                            name: this.state.foodName,
+                            imageUrl: this.state.imageUrl,
+                            foodDescription: this.state.foodDescription
+                        }
+                        updateAFood(params).then(result => {
+                            if (result === 'ok') {
+                                this.state.flatListItem.refreshFlatListItem(params);
+                            } 
+                        }).catch(error => {
+                            console.log(`Error is: ${error}`);
+                        })
                         this.refs.myModal.close()
                     }}
                 >

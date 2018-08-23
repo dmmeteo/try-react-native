@@ -4,6 +4,8 @@ import Modal from 'react-native-modalbox';
 import Button from 'react-native-button';
 import flatListData from '../data/flatListData';
 
+import {insertNewFoodToServer} from '../networking/Server';
+
 const screen = Dimensions.get('window');
 class AddModal extends Component {
     constructor(props){
@@ -78,8 +80,13 @@ class AddModal extends Component {
                             imageUrl: 'https://image.freepik.com/free-icon/restaurant-cutlery-circular-symbol-of-a-spoon-and-a-fork-in-a-circle_318-61086.jpg',
                             foodDescription: this.state.newFoodDescription
                         };
-                        flatListData.push(newFood);
-                        this.props.parentFlatList.refreshFlatList(newKey);
+                        // flatListData.push(newFood);
+                        // this.props.parentFlatList.refreshFlatList(newKey);
+                        insertNewFoodToServer(newFood).then(result => {
+                            if (result === 'ok') {
+                                this.props.parentFlatList.refreshDataFromServer();
+                            }
+                        })
                         this.setState({
                             newFoodName: '',
                             newFoodDescription: ''
